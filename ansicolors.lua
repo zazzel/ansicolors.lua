@@ -82,7 +82,7 @@ local function options2numbers(options)
   return numbers
 end
 
-function ansicolors.colorize( text, options )
+function ansicolors.colorize( options, text )
   options = string.lower(options or '')
   
   local numbers = options2numbers(options)
@@ -91,5 +91,14 @@ function ansicolors.colorize( text, options )
   
   return escapeNumbers(numbers) .. text .. reset
 end
+
+
+local mt = {}
+
+function mt.__index(_, name)
+  return function(str) return ansicolors.colorize(name, str) end
+end
+
+setmetatable(ansicolors, mt)
 
 return ansicolors
