@@ -1,4 +1,5 @@
 -- Copyright (c) 2009 Rob Hoelz <rob@hoelzro.net>
+-- Copyright (c) 2011 Enrique García Cota <enrique.garcia.cota@gmail.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -18,65 +19,77 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-local pairs = pairs
-local tostring = tostring
-local setmetatable = setmetatable
-local schar = string.char
+local ansicolors = {}
 
-module 'ansicolors'
+local codes = {
+  -- misc
+  bright     = 1,
+  dim        = 2,
+  underline  = 4,
+  blink      = 5,
+  reverse    = 7,
+  hidden     = 8,
 
-local colormt = {}
+  -- foreground colors
+  black     = 30,
+  red       = 31,
+  green     = 32,
+  yellow    = 33,
+  blue      = 34,
+  magenta   = 35,
+  cyan      = 36,
+  white     = 37,
 
-function colormt:__tostring()
-    return self.value
-end
-
-function colormt:__concat(other)
-    return tostring(self) .. tostring(other)
-end
-
-function colormt:__call(s)
-    return self .. s .. _M.reset
-end
-
-colormt.__metatable = {}
-
-local function makecolor(value)
-    return setmetatable({ value = schar(27) .. '[' .. tostring(value) .. 'm' }, colormt)
-end
-
-local colors = {
-    -- attributes
-    reset = 0,
-    clear = 0,
-    bright = 1,
-    dim = 2,
-    underscore = 4,
-    blink = 5,
-    reverse = 7,
-    hidden = 8,
-
-    -- foreground
-    black = 30,
-    red = 31,
-    green = 32,
-    yellow = 33,
-    blue = 34,
-    magenta = 35,
-    cyan = 36,
-    white = 37,
-
-    -- background
-    onblack = 40,
-    onred = 41,
-    ongreen = 42,
-    onyellow = 43,
-    onblue = 44,
-    onmagenta = 45,
-    oncyan = 46,
-    onwhite = 47,
+  -- background colors
+  blackbg   = 40,
+  redbg     = 41,
+  greenbg   = 42,
+  yellowbg  = 43,
+  bluebg    = 44,
+  magentabg = 45,
+  cyanbg    = 46,
+  whitebg   = 47
 }
 
-for c, v in pairs(colors) do
-    _M[c] = makecolor(v)
+local codeNames = {}
+for name,_ in pairs(codes) do table.insert(codeNames, name) end
+table.sort(codeNames, function(a,b) return codes[a] > codes[b] end)
+
+local escapeString = string.char(27) .. '[%dm'
+local function escapeNumber(number)
+  return escapeString:format(number)
 end
+
+local function escapeNumbers(numbers)
+  local buffer = {}
+  for i=1, #numbers do
+    table.insert(buffer, escapeNumber(numbers[i]))
+  end
+  return table.concat(buffer)
+end
+
+local reset = escapeNumber(0)
+
+local function options2numbers(options)
+  local numbers, substitutions, codeName = {}, 0
+  for i = 1, #codeNames do
+    codeName = codeNames[i]
+    options, substitutions = options:gsub(codeName, '')
+    if substitutions > 0 then
+      table.insert(numbers, codes[codeName])
+    end
+  end
+  return numbers
+end
+
+function ansicolors.colorize( text, options )
+  options = string.lower(options or '')
+  
+  local numbers = options2numbers(options)
+
+  if #numbers == 0 then return text end
+  
+  return escapeNumbers(numbers) .. text .. reset
+end
+
+return ansicolors
