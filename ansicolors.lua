@@ -19,9 +19,10 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
-local ansicolors = {}
+local keys = {
+  -- reset
+  reset =      0,
 
-local codes = {
   -- misc
   bright     = 1,
   dim        = 2,
@@ -51,54 +52,39 @@ local codes = {
   whitebg   = 47
 }
 
-local codeNames = {}
-for name,_ in pairs(codes) do table.insert(codeNames, name) end
-table.sort(codeNames, function(a,b) return codes[a] > codes[b] end)
-
 local escapeString = string.char(27) .. '[%dm'
 local function escapeNumber(number)
   return escapeString:format(number)
 end
 
-local function escapeNumbers(numbers)
+local reset = escapeNumber(keys.reset)
+
+local function escapeKeys(text)
+
   local buffer = {}
-  for i=1, #numbers do
-    table.insert(buffer, escapeNumber(numbers[i]))
+  local number
+  for word in text:gmatch("%w+") do
+    number = keys[word]
+    assert(number, "Unknown key: " .. word)
+    table.insert(buffer, escapeNumber(number) )
   end
+
   return table.concat(buffer)
 end
 
-local reset = escapeNumber(0)
-
-local function options2numbers(options)
-  local numbers, substitutions, codeName = {}, 0
-  for i = 1, #codeNames do
-    codeName = codeNames[i]
-    options, substitutions = options:gsub(codeName, '')
-    if substitutions > 0 then
-      table.insert(numbers, codes[codeName])
-    end
-  end
-  return numbers
+local function replaceCodes(text)
+  text = string.gsub(text,"(%%{(.-)})", function(_, text) return escapeKeys(text) end )
+  return reset .. text .. reset
 end
 
-function ansicolors.colorize( options, text )
-  options = string.lower(options or '')
-  
-  local numbers = options2numbers(options)
+-- public
 
-  if #numbers == 0 then return text end
-  
-  return escapeNumbers(numbers) .. text .. reset
+local function ansicolors( text )
+  text = tostring(text or '')
+
+  return replaceCodes(text)
 end
 
 
-local mt = {}
-
-function mt.__index(_, name)
-  return function(str) return ansicolors.colorize(name, str) end
-end
-
-setmetatable(ansicolors, mt)
 
 return ansicolors
