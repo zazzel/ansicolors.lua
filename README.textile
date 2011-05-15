@@ -20,6 +20,19 @@ h2. Usage
   print(colors('%{bright red underlined}hello'))
 </pre>
 
+h2. Testing
+
+This application uses telescope in order to perform the tests. Install telescope, and then execute
+<pre>
+  tsc specs/ansicolors_spec.lua
+</pre>
+
+Notice that the tests will only work on an ANSI-compatible machine (windows isn't ANSI-compatible)
+
+h2. Windows
+
+Windows console, by default, isn't capable of handling ANSI color codes correctly. This library tries to detect whether it is on a windows machine (by looking at package.path) and in that case it suppresses all ANSI control characters (the text appears devoid of color, but legible).
+
 h2. Valid attribute list:
 
 Misc. attributes:
