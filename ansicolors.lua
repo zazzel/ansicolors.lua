@@ -19,6 +19,14 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
+
+-- support detection
+local function isWindows()
+  return type(package) == 'table' and type(package.config) == 'string' and package.config:sub(1,1) == '\\'
+end
+
+local supported = not isWindows()
+
 local keys = {
   -- reset
   reset =      0,
@@ -58,6 +66,8 @@ local function escapeNumber(number)
 end
 
 local function escapeKeys(str)
+
+  if not supported then return "" end
 
   local buffer = {}
   local number

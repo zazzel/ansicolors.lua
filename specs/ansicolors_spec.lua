@@ -24,4 +24,18 @@ describe('ansicolors', function()
     assert_equal(ansicolors('%{bright white}*%{bright red}BEEP%{bright white}*'),  c27 .. '[0m' .. c27 .. '[1m' .. c27 .. '[37m*' .. c27 .. '[1m' .. c27 .. '[31mBEEP' .. c27 .. '[1m' .. c27 .. '[37m*' .. c27 .. '[0m')
   end)
 
+  describe('support detection', function()
+
+    it('should return a plain text string on systems with no package.config', function()
+      local prevConfig = package.config
+      package.config = "\\"
+      local colors = dofile 'ansicolors.lua'
+
+      assert_equal(colors('%{red underline}foo'), 'foo')
+
+      io.popen = prevIoPopen
+    end)
+
+  end)
+
 end)
