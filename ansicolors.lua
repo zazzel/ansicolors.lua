@@ -57,13 +57,11 @@ local function escapeNumber(number)
   return escapeString:format(number)
 end
 
-local reset = escapeNumber(keys.reset)
-
-local function escapeKeys(text)
+local function escapeKeys(str)
 
   local buffer = {}
   local number
-  for word in text:gmatch("%w+") do
+  for word in str:gmatch("%w+") do
     number = keys[word]
     assert(number, "Unknown key: " .. word)
     table.insert(buffer, escapeNumber(number) )
@@ -72,19 +70,18 @@ local function escapeKeys(text)
   return table.concat(buffer)
 end
 
-local function replaceCodes(text)
-  text = string.gsub(text,"(%%{(.-)})", function(_, text) return escapeKeys(text) end )
-  return reset .. text .. reset
+local function replaceCodes(str)
+  str = string.gsub(str,"(%%{(.-)})", function(_, str) return escapeKeys(str) end )
+  return str
 end
 
 -- public
 
-local function ansicolors( text )
-  text = tostring(text or '')
+local function ansicolors( str )
+  str = tostring(str or '')
 
-  return replaceCodes(text)
+  return replaceCodes('%{reset}' .. str .. '%{reset}')
 end
-
 
 
 return ansicolors
