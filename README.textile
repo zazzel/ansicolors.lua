@@ -1,5 +1,7 @@
 h1. ansicolors.lua
 
+!https://travis-ci.org/kikito/ansicolors.lua.png?branch=master!:https://travis-ci.org/kikito/ansicolors.lua
+
 ansicolors is a simple Lua function for printing to the console in color.
 
 
