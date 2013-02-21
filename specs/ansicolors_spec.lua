@@ -38,11 +38,11 @@ describe('ansicolors', function()
     end)
 
     it('should add red underlined text', function()
-      assert_equal(ansicolors('%{red underline}foo'), c27 .. '[31m' .. c27 .. '[4mfoo')
+      assert_equal(ansicolors.noReset('%{red underline}foo'), c27 .. '[31m' .. c27 .. '[4mfoo')
     end)
 
     it('should with heterogeneous attributes', function()
-      assert_equal(ansicolors('%{bright white}*%{bright red}BEEP%{bright white}*'),  c27 .. '[1m' .. c27 .. '[37m*' .. c27 .. '[1m' .. c27 .. '[31mBEEP' .. c27 .. '[1m' .. c27 .. '[37m*')
+      assert_equal(ansicolors.noReset('%{bright white}*%{bright red}BEEP%{bright white}*'),  c27 .. '[1m' .. c27 .. '[37m*' .. c27 .. '[1m' .. c27 .. '[31mBEEP' .. c27 .. '[1m' .. c27 .. '[37m*')
     end)
 
   end)
