@@ -97,4 +97,4 @@ local function ansicolors( str )
 end
 
 
-return setmetatable({replaceCodes = replaceCodes}, {__call = ansicolors})
+return setmetatable({noReset = replaceCodes}, {__call = ansicolors})
