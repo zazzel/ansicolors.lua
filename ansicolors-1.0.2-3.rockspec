@@ -1,5 +1,5 @@
 package = "ansicolors"
-version = "1.0.2-2"
+version = "1.0.2-3"
 source = {
   url = "https://github.com/kikito/ansicolors.lua/archive/v1.0.2.tar.gz",
   dir = "ansicolors.lua-1.0.2"
