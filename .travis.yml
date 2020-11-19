@@ -5,13 +5,16 @@ arch:
  
 language: erlang
 
+otp_release:
+  - "23.0.2"
+  - "22.3.4"
+
 env:
   - LUA=""
   - LUA="luajit"
 
 install:
-  - sudo wget -o https://storage.googleapis.com/travis-ci-language-archives/erlang/binaries/ubuntu/16.04/ppc64le/erlang-18.0-rc2.tar.bz2
-  - sudo apt-get install -y erlang-18.0-rc2
+  - sudo apt-get install erlang
   - sudo apt-get install luajit
   - sudo apt-get install luarocks
   - sudo luarocks install telescope
