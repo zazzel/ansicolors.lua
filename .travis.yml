@@ -10,7 +10,8 @@ env:
   - LUA="luajit"
 
 install:
-  - sudo apt-get install erlang
+  - sudo wget -o https://storage.googleapis.com/travis-ci-language-archives/erlang/binaries/ubuntu/16.04/ppc64le/erlang-18.0-rc2.tar.bz2
+  - sudo apt-get install -y erlang-18.0-rc2
   - sudo apt-get install luajit
   - sudo apt-get install luarocks
   - sudo luarocks install telescope
