@@ -14,7 +14,6 @@ env:
   - LUA="luajit"
 
 install:
-  - sudo apt-get install erlang
   - sudo apt-get install luajit
   - sudo apt-get install luarocks
   - sudo luarocks install telescope
